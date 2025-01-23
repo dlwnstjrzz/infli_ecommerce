@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { useSearchParams, usePathname } from "next/navigation";
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { Suspense } from "react";
 import Image from "next/image";
 
@@ -34,6 +33,7 @@ const categories = [
 ];
 
 function CategoryMenuContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const isShopPage = pathname === "/shop";
@@ -41,13 +41,11 @@ function CategoryMenuContent() {
     ? searchParams.get("category") || "event"
     : null;
 
-  const handleCategoryClick = (categoryId) => {
-    if (searchParams.get("category") === categoryId) {
-      // Assuming you want to navigate to /shop?category=categoryId
-      // You might want to use Link instead of button
-      // For now, we'll use Link
-      // You might want to implement this logic differently based on your requirements
-    }
+  const handleCategoryClick = (categoryId, e) => {
+    e.preventDefault();
+    const params = new URLSearchParams(searchParams);
+    params.set("category", categoryId);
+    router.push(`/shop?${params.toString()}`, { shallow: true });
   };
 
   return (
@@ -55,9 +53,10 @@ function CategoryMenuContent() {
       {categories.map((category) => {
         const isActive = isShopPage && currentCategory === category.id;
         return (
-          <Link
+          <a
             key={category.id}
             href={`/shop?category=${category.id}`}
+            onClick={(e) => handleCategoryClick(category.id, e)}
             className="flex flex-col items-center gap-2"
           >
             <div
@@ -94,7 +93,7 @@ function CategoryMenuContent() {
             >
               {category.name}
             </span>
-          </Link>
+          </a>
         );
       })}
     </div>

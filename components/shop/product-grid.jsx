@@ -38,7 +38,7 @@ function ProductGridContent() {
   };
 
   const categoryProducts = products[category] || [];
-  const currentCategory = categoryInfo[category] || {
+  const currentCategoryInfo = categoryInfo[category] || {
     title: "",
     description: "",
   };
@@ -46,9 +46,9 @@ function ProductGridContent() {
   return (
     <div className="space-y-4">
       <div className="text-center space-y-1">
-        <h2 className="text-xl font-bold pt-6">{currentCategory.title}</h2>
+        <h2 className="text-xl font-bold pt-6">{currentCategoryInfo.title}</h2>
         <p className="text-[0.8125rem] text-[rgba(34,34,34,0.5)]">
-          {currentCategory.description}
+          {currentCategoryInfo.description}
         </p>
       </div>
       <div className="grid grid-cols-2 gap-4">

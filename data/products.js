@@ -17,7 +17,7 @@ export const products = {
       remainingQuantity: 23,
     },
     {
-      id: "event-1",
+      id: "event-2",
       name: "농심 신라면 5봉지",
       price: "22.9",
       image: TEMP_IMAGE,
@@ -30,7 +30,7 @@ export const products = {
       remainingQuantity: 23,
     },
     {
-      id: "event-1",
+      id: "event-3",
       name: "농심 신라면 5봉지",
       price: "22.9",
       image: TEMP_IMAGE,
