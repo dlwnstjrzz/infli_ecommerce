@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, usePathname } from "next/navigation";
 import { Suspense } from "react";
 import Image from "next/image";
 
@@ -35,7 +35,11 @@ const categories = [
 
 function CategoryMenuContent() {
   const searchParams = useSearchParams();
-  const currentCategory = searchParams.get("category") || "event";
+  const pathname = usePathname();
+  const isShopPage = pathname === "/shop";
+  const currentCategory = isShopPage
+    ? searchParams.get("category") || "event"
+    : null;
 
   const handleCategoryClick = (categoryId) => {
     if (searchParams.get("category") === categoryId) {
@@ -49,7 +53,7 @@ function CategoryMenuContent() {
   return (
     <div className="grid grid-cols-5 gap-4">
       {categories.map((category) => {
-        const isActive = currentCategory === category.id;
+        const isActive = isShopPage && currentCategory === category.id;
         return (
           <Link
             key={category.id}
@@ -81,9 +85,11 @@ function CategoryMenuContent() {
             </div>
             <span
               className={`text-xs tracking-tight whitespace-pre-line transition-all ${
-                isActive
-                  ? "font-bold text-blue-500"
-                  : "font-medium text-gray-500"
+                isShopPage
+                  ? isActive
+                    ? "font-bold text-blue-500"
+                    : "font-medium text-gray-500"
+                  : "font-medium text-gray-900"
               }`}
             >
               {category.name}
