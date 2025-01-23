@@ -37,6 +37,7 @@ export function ProductGrid() {
   };
 
   const categoryProducts = products[category] || [];
+
   const currentCategory = categoryInfo[category] || {
     title: "",
     description: "",

@@ -29,9 +29,14 @@ export function Banner() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [scrollSnaps, setScrollSnaps] = useState([]);
   const [progress, setProgress] = useState(0);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    if (!emblaApi) return;
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!emblaApi || !mounted) return;
 
     setScrollSnaps(emblaApi.scrollSnapList());
     emblaApi.on("select", () => {
@@ -39,7 +44,7 @@ export function Banner() {
       setProgress(0);
     });
 
-    let autoplayInterval = setInterval(() => {
+    const autoplayInterval = setInterval(() => {
       if (emblaApi.canScrollNext()) {
         emblaApi.scrollNext();
       } else {
@@ -47,8 +52,7 @@ export function Banner() {
       }
     }, AUTOPLAY_INTERVAL);
 
-    // 프로그레스 애니메이션
-    let progressInterval = setInterval(() => {
+    const progressInterval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) return 0;
         return prev + 100 / (AUTOPLAY_INTERVAL / 100);
@@ -59,7 +63,15 @@ export function Banner() {
       clearInterval(autoplayInterval);
       clearInterval(progressInterval);
     };
-  }, [emblaApi, emblaRef]);
+  }, [emblaApi, mounted]);
+
+  if (!mounted) {
+    return (
+      <div className="relative">
+        <div className="aspect-[2/1] bg-gray-200" />
+      </div>
+    );
+  }
 
   return (
     <div className="relative">

@@ -9,12 +9,29 @@ export default function ShopPage() {
       <Header />
       <main className="px-4">
         <div className="border-b">
-          <CategoryMenu />
+          <Suspense fallback={<CategoryMenuSkeleton />}>
+            <CategoryMenu />
+          </Suspense>
         </div>
         <Suspense fallback={<ProductGridSkeleton />}>
           <ProductGrid />
         </Suspense>
       </main>
+    </div>
+  );
+}
+
+function CategoryMenuSkeleton() {
+  return (
+    <div className="py-6">
+      <div className="grid grid-cols-5 gap-4">
+        {[...Array(5)].map((_, i) => (
+          <div key={i} className="flex flex-col items-center gap-2">
+            <div className="h-14 w-14 rounded-full bg-gray-200" />
+            <div className="h-8 w-12 bg-gray-200 rounded" />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
