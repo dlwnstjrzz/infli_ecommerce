@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import Image from "next/image";
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
 const categories = [
   {
@@ -31,35 +33,32 @@ const categories = [
   },
 ];
 
-export function CategoryMenu() {
-  const router = useRouter();
-  const pathname = usePathname();
+function CategoryMenuContent() {
   const searchParams = useSearchParams();
   const currentCategory = searchParams.get("category") || "event";
-  const isShopPage = pathname === "/shop";
 
   const handleCategoryClick = (categoryId) => {
-    if (isShopPage) {
-      router.push(`/shop?category=${categoryId}`);
-    } else {
-      router.push(`/shop?category=${categoryId}`);
+    if (searchParams.get("category") === categoryId) {
+      // Assuming you want to navigate to /shop?category=categoryId
+      // You might want to use Link instead of button
+      // For now, we'll use Link
+      // You might want to implement this logic differently based on your requirements
     }
   };
 
   return (
-    <div className="py-6">
-      <div className="grid grid-cols-5 gap-4">
-        {categories.map((category) => (
-          <button
+    <div className="grid grid-cols-5 gap-4">
+      {categories.map((category) => {
+        const isActive = currentCategory === category.id;
+        return (
+          <Link
             key={category.id}
-            onClick={() => handleCategoryClick(category.id)}
+            href={`/shop?category=${category.id}`}
             className="flex flex-col items-center gap-2"
           >
             <div
               className={`flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 transition-all ${
-                isShopPage && currentCategory === category.id
-                  ? "ring-2 ring-blue-500 bg-blue-50"
-                  : ""
+                isActive ? "ring-2 ring-blue-500 bg-blue-50" : ""
               }`}
             >
               {typeof category.icon === "string" &&
@@ -82,18 +81,39 @@ export function CategoryMenu() {
             </div>
             <span
               className={`text-xs tracking-tight whitespace-pre-line transition-all ${
-                isShopPage
-                  ? currentCategory === category.id
-                    ? "font-bold text-blue-500"
-                    : "font-medium text-gray-500"
-                  : "font-medium"
+                isActive
+                  ? "font-bold text-blue-500"
+                  : "font-medium text-gray-500"
               }`}
             >
               {category.name}
             </span>
-          </button>
-        ))}
-      </div>
+          </Link>
+        );
+      })}
+    </div>
+  );
+}
+
+function CategoryMenuSkeleton() {
+  return (
+    <div className="grid grid-cols-5 gap-4">
+      {[...Array(5)].map((_, i) => (
+        <div key={i} className="flex flex-col items-center gap-2">
+          <div className="h-14 w-14 rounded-full bg-gray-200" />
+          <div className="h-4 w-12 bg-gray-200 rounded" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function CategoryMenu() {
+  return (
+    <div className="py-6">
+      <Suspense fallback={<CategoryMenuSkeleton />}>
+        <CategoryMenuContent />
+      </Suspense>
     </div>
   );
 }

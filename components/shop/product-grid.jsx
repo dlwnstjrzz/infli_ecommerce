@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { products } from "@/data/products";
+import { Suspense } from "react";
 
 const categoryInfo = {
   event: {
@@ -27,7 +28,7 @@ const categoryInfo = {
   },
 };
 
-export function ProductGrid() {
+function ProductGridContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const category = searchParams.get("category") || "event";
@@ -37,7 +38,6 @@ export function ProductGrid() {
   };
 
   const categoryProducts = products[category] || [];
-
   const currentCategory = categoryInfo[category] || {
     title: "",
     description: "",
@@ -116,5 +116,36 @@ export function ProductGrid() {
         ))}
       </div>
     </div>
+  );
+}
+
+function ProductGridSkeleton() {
+  return (
+    <div className="space-y-4">
+      <div className="text-center space-y-1">
+        <div className="h-6 w-32 bg-gray-200 rounded mx-auto" />
+        <div className="h-4 w-48 bg-gray-200 rounded mx-auto" />
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="rounded-2xl bg-gray-100 overflow-hidden">
+            <div className="aspect-square bg-gray-200" />
+            <div className="p-3 space-y-2">
+              <div className="h-4 w-16 bg-gray-200 rounded" />
+              <div className="h-4 w-32 bg-gray-200 rounded" />
+              <div className="h-4 w-20 bg-gray-200 rounded" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function ProductGrid() {
+  return (
+    <Suspense fallback={<ProductGridSkeleton />}>
+      <ProductGridContent />
+    </Suspense>
   );
 }
