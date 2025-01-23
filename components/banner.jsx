@@ -22,7 +22,7 @@ const banners = [
   },
 ];
 
-const AUTOPLAY_INTERVAL = 3000;
+const AUTOPLAY_INTERVAL = 3500;
 
 export function Banner() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
