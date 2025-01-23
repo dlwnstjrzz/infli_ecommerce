@@ -42,12 +42,18 @@ export function CategoryMenu() {
             <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gray-100">
               {typeof category.icon === "string" &&
               category.icon.startsWith("/") ? (
-                <Image
-                  src={category.icon}
-                  alt={category.name}
-                  width={32}
-                  height={32}
-                />
+                <object
+                  data={category.icon}
+                  type="image/svg+xml"
+                  className="w-8 h-8"
+                >
+                  <Image
+                    src={category.icon}
+                    alt={category.name}
+                    width={32}
+                    height={32}
+                  />
+                </object>
               ) : (
                 <span className="text-2xl">{category.icon}</span>
               )}
