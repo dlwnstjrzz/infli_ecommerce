@@ -25,6 +25,11 @@ const navigation = [
 export function Navigator() {
   const pathname = usePathname();
 
+  // 제품 상세 페이지인 경우 Navigator를 숨김
+  if (pathname.startsWith("/shop/") && pathname !== "/shop") {
+    return null;
+  }
+
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 mx-auto max-w-[480px] border-t bg-white">
       <div className="flex py-[6px]">

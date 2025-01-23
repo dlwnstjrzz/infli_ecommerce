@@ -1,130 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
-
-const TEMP_IMAGE =
-  "https://kream-phinf.pstatic.net/MjAyNDAzMTFfMjc4/MDAxNzEwMTM3Nzk2NDMw.YeYr9ZuJ40Z2G3uDVJ-8EbYg5IJ7W1-DGuYOuUEZ7KMg.eOwCeF5_FGoGdbvR2VKXG6asIVwHcmcHFWXL9FHGbjUg.PNG/a_d493ddd50e144437b1e83be8ebc4eebd.png?type=m_webp";
-
-const products = {
-  event: [
-    {
-      id: 1,
-      name: "농심 신라면 5봉지",
-      price: "22.9",
-      image: TEMP_IMAGE,
-      brand: "농심",
-      isNew: true,
-      discount: "10%",
-    },
-    {
-      id: 2,
-      name: "CJ 비비고 왕교자 만두 (600g)",
-      price: "35.8",
-      image: TEMP_IMAGE,
-      brand: "CJ",
-    },
-    {
-      id: 3,
-      name: "삼양 불닭볶음면 5봉지",
-      price: "25.9",
-      image: TEMP_IMAGE,
-      brand: "삼양",
-    },
-  ],
-  life: [
-    {
-      id: 4,
-      name: "LG 생활건강 페리오 치약 2개입",
-      price: "19.9",
-      image: TEMP_IMAGE,
-      brand: "LG",
-    },
-    {
-      id: 5,
-      name: "코멧 일회용 마스크 50매",
-      price: "29.9",
-      image: TEMP_IMAGE,
-      brand: "코멧",
-    },
-    {
-      id: 6,
-      name: "LG 수려한 샴푸 500ml",
-      price: "45.8",
-      image: TEMP_IMAGE,
-      brand: "LG",
-    },
-  ],
-  food: [
-    {
-      id: 7,
-      name: "CJ 햇반 컵반 불고기 덮밥",
-      price: "15.9",
-      image: TEMP_IMAGE,
-      brand: "CJ",
-    },
-    {
-      id: 8,
-      name: "오뚜기 진라면 컵라면 6개입",
-      price: "32.8",
-      image: TEMP_IMAGE,
-      brand: "오뚜기",
-    },
-    {
-      id: 9,
-      name: "동원 양반김 도시락김 32봉",
-      price: "28.9",
-      image: TEMP_IMAGE,
-      brand: "동원",
-    },
-  ],
-  beauty: [
-    {
-      id: 10,
-      name: "이니스프리 그린티 세럼 50ml",
-      price: "89.9",
-      image: TEMP_IMAGE,
-      brand: "이니스프리",
-    },
-    {
-      id: 11,
-      name: "메디힐 마스크팩 10매입",
-      price: "49.9",
-      image: TEMP_IMAGE,
-      brand: "메디힐",
-    },
-    {
-      id: 12,
-      name: "닥터자르트 세라마이딘 크림",
-      price: "158.0",
-      image: TEMP_IMAGE,
-      brand: "닥터자르트",
-    },
-  ],
-  study: [
-    {
-      id: 13,
-      name: "모나미 153 볼펜 12개입",
-      price: "19.9",
-      image: TEMP_IMAGE,
-      brand: "모나미",
-    },
-    {
-      id: 14,
-      name: "카카오프렌즈 노트북 파우치 13인치",
-      price: "89.9",
-      image: TEMP_IMAGE,
-      brand: "카카오프렌즈",
-    },
-    {
-      id: 15,
-      name: "제브라 마일드라이너 형광펜 5색",
-      price: "25.8",
-      image: TEMP_IMAGE,
-      brand: "제브라",
-    },
-  ],
-};
+import { useSearchParams, useRouter } from "next/navigation";
+import { products } from "@/data/products";
 
 const categoryInfo = {
   event: {
@@ -150,8 +28,13 @@ const categoryInfo = {
 };
 
 export function ProductGrid() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const category = searchParams.get("category") || "event";
+
+  const handleProductClick = (productId) => {
+    router.push(`/shop/${productId}`);
+  };
 
   const categoryProducts = products[category] || [];
   const currentCategory = categoryInfo[category] || {
@@ -171,6 +54,7 @@ export function ProductGrid() {
         {categoryProducts.map((product) => (
           <div
             key={product.id}
+            onClick={() => handleProductClick(product.id)}
             className="group cursor-pointer overflow-hidden rounded-2xl bg-white transition-all hover:shadow-lg"
           >
             <div>
@@ -182,6 +66,13 @@ export function ProductGrid() {
                     fill
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
                   />
+                  {product.limitedQuantity && (
+                    <div className="absolute top-2 left-2 bg-black/70 backdrop-blur px-2 py-1 rounded-full">
+                      <p className="text-[10px] font-bold text-white">
+                        선착순 {product.remainingQuantity}개
+                      </p>
+                    </div>
+                  )}
                 </div>
                 <div className="w-full flex justify-between absolute left-0 top-0 flex gap-1 p-2">
                   {product.isNew && (
@@ -191,13 +82,13 @@ export function ProductGrid() {
                       </span>
                     </div>
                   )}
-                  {product.discount && (
+                  {/* {product.discount && (
                     <div className="rounded-full bg-gray-100 px-2.5 py-1 shadow-sm backdrop-blur">
                       <span className="bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-xs font-bold text-transparent">
                         {product.discount}
                       </span>
                     </div>
-                  )}
+                  )} */}
                 </div>
               </div>
               <div className="space-y-2 p-3">
